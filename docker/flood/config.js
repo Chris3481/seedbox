@@ -18,7 +18,7 @@ const CONFIG = {
     // This value dictates how old data is, in milliseconds, before being purged.
     dbCleanInterval: 1000 * 60 * 60,
     // Where to store the local nedb database.
-    dbPath: '/srv/flood/server/db/',
+    dbPath: '/data/flood-db/',
     // The host that Flood should listen for web connections on.
     // If you want to connect to Flood from hosts other that the one it is running
     // on, you should change this value.
