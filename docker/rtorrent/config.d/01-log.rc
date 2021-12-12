@@ -1,0 +1,11 @@
+## Logging:
+##   Levels = critical error warn notice info debug
+
+method.insert = cfg.logs,     private|const|string, (cat,(cfg.basedir),"log/")
+method.insert = cfg.logfile,  private|const|string, (cat,(cfg.logs),"rtorrent-",(system.time),".log")
+
+print = (cat, "Logging to ", (cfg.logfile))
+log.open_file = "log", (cfg.logfile)
+log.add_output = "info", "log"
+# log.add_output = "tracker_debug", "log"
+log.add_output = "torrent_info", "log"

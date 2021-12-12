@@ -8,6 +8,8 @@ RUN apt-get update && \
         ftp \
         && rm -rf /var/lib/apt/lists/*
 
+# This causes a mount error, find why
+# COPY rtorrent/.rtorrent.rc /srv/rtorrent
 
 # install flood
 RUN cd /srv && git clone https://github.com/jfurrow/flood.git && \
@@ -15,9 +17,7 @@ RUN cd /srv && git clone https://github.com/jfurrow/flood.git && \
 
 RUN cd /srv/flood && \
      npm install && \
-     npm run build \
-
-VOLUME /srv/flood/server/db
+     npm run build
 
 # start supervisord
 CMD /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf
