@@ -1,0 +1,33 @@
+version: "3.0"
+
+services:
+
+  seedbox:
+    build: ./
+    container_name: seedbox
+    restart: unless-stopped
+    ports:
+      - "6881:6881"
+      - "6881:6881/udp"
+      - "50000:50000"
+      - "50000:50000/udp"
+      - "3000:3000"
+    environment:
+      - PUID=1000
+      - PGID=1000seedbox
+    volumes:
+      - /home/pi/seedbox/docker/supervisor/supervisor.conf.d:/etc/supervisor/conf.d
+
+      - /home/pi/seedbox/docker/rtorrent/.rtorrent.rc:/srv/rtorrent/.rtorrent.rc
+      - /home/pi/seedbox/docker/rtorrent/moveFinishedTorrent.sh:/srv/rtorrent/moveFinishedTorrent.sh
+      - /home/pi/seedbox/downloads:/srv/rtorrent/download
+      - /home/pi/seedbox/logs:/srv/rtorrent/log
+
+      - /home/pi/seedbox/docker/flood/config.js:/srv/flood/config.js
+      - /home/pi/seedbox/flood-db:/srv/flood/server/db
+    networks:
+      - seedbox-network
+
+networks:
+  seedbox-network:
+    driver: bridge
