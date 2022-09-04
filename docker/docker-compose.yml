@@ -12,9 +12,14 @@ services:
       - "50000:50000"
       - "50000:50000/udp"
       - "3000:3000"
+      # samba
+      - "137:137/udp"
+      - "138:138/udp"
+      - "139:139/tcp"
+      - "445:445/tcp"
     environment:
       - PUID=1000
-      - PGID=1000seedbox
+      - PGID=1000
     volumes:
       - /home/pi/seedbox/docker/supervisor/supervisor.conf.d:/etc/supervisor/conf.d
 
@@ -27,8 +32,22 @@ services:
 
       - /home/pi/seedbox/docker/flood/config.js:/srv/flood/config.js
       - /home/pi/seedbox/flood-db:/data/flood-db
+
+      - /home/pi/seedbox/docker/samba/smb.conf:/etc/samba/smb.conf
     networks:
       - seedbox-network
+
+  minidlna:
+    container_name: minidnla
+    restart: unless-stopped
+    image: cytomich/rpi-docker-minidlna
+    volumes:
+      - /home/pi/seedbox/downloads:/media:z
+    environment:
+      - MINIDLNA_MEDIA_DIR=/media
+      - MINIDLNA_PORT=8200
+      - MINIDLNA_FRIENDLY_NAME=Raspberry
+    network_mode: "host"
 
 networks:
   seedbox-network:

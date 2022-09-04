@@ -6,6 +6,8 @@ RUN apt-get update && \
         git \
         supervisor \
         ftp \
+    	samba \
+    	smbclient \
         && rm -rf /var/lib/apt/lists/*
 
 # This causes a mount error, find why

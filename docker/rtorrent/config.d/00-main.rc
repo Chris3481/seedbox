@@ -27,7 +27,7 @@ network.port_range.set = 50000-50000
 network.port_random.set = no
 
 # Set whether the client should try to connect to UDP trackers.
-trackers.use_udp.set = no
+trackers.use_udp.set = yes
 
 
 ## Peer settings
