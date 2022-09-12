@@ -3,14 +3,10 @@ version: "3.0"
 services:
 
   seedbox:
-    build: ./
-    container_name: seedbox
+    container_name: flood
     restart: unless-stopped
+    build: ./flood
     ports:
-      - "6881:6881"
-      - "6881:6881/udp"
-      - "50000:50000"
-      - "50000:50000/udp"
       - "3000:3000"
       # samba
       - "137:137/udp"
@@ -21,7 +17,29 @@ services:
       - PUID=1000
       - PGID=1000
     volumes:
-      - /home/pi/seedbox/docker/supervisor/supervisor.conf.d:/etc/supervisor/conf.d
+      - /home/pi/seedbox/downloads:/srv/rtorrent/download
+
+      - /home/pi/seedbox/docker/flood/config.js:/srv/flood/config.js
+      - /home/pi/seedbox/flood-db:/data/flood-db
+
+      - /home/pi/seedbox/docker/samba/smb.conf:/etc/samba/smb.conf
+    networks:
+      - seedbox-network
+
+  rtorrent:
+    container_name: rtorrent
+    restart: unless-stopped
+    build: ./rtorrent
+    ports:
+      - "6881:6881"
+      - "6881:6881/udp"
+      - "50000:50000"
+      - "50000:50000/udp"
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - /home/pi/seedbox/docker/rtorrent/supervisor/rtorrent.conf:/etc/supervisor/conf.d/rtorrent.conf
 
       - /home/pi/seedbox/docker/rtorrent/.rtorrent.rc:/srv/rtorrent/.rtorrent.rc
       - /home/pi/seedbox/docker/rtorrent/config.d:/srv/rtorrent/config.d
@@ -29,11 +47,6 @@ services:
       - /home/pi/seedbox/downloads:/srv/rtorrent/download
       - /home/pi/seedbox/logs:/srv/rtorrent/log
       - /home/pi/seedbox/.session:/srv/rtorrent/.session
-
-      - /home/pi/seedbox/docker/flood/config.js:/srv/flood/config.js
-      - /home/pi/seedbox/flood-db:/data/flood-db
-
-      - /home/pi/seedbox/docker/samba/smb.conf:/etc/samba/smb.conf
     networks:
       - seedbox-network
 

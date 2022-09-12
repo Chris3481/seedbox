@@ -47,6 +47,12 @@ const CONFIG = {
         // watchMountPoints: [
         //   "/mnt/disk"
         // ]
+    },
+    scgi: {
+        host: 'rtorrent',
+        port: 16891,
+        socket: false,
+        socketPath: '/tmp/rtorrent.sock'
     }
 };
 // Do not remove the below line.
