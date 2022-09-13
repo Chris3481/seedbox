@@ -4,3 +4,6 @@ execute.nothrow = sh, -c, (cat,\
     "find ", (cfg.drop_in), " -name '*.rc' ",\
     "| sort | sed -re 's/^/import=/' > ", (cfg.drop_in), ".import")
 try_import = (cat, (cfg.drop_in), ".import")
+
+# needed to start with docker
+system.daemon.set = true

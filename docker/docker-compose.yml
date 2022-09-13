@@ -39,9 +39,6 @@ services:
       - PUID=1000
       - PGID=1000
     volumes:
-      - /home/pi/seedbox/docker/rtorrent/supervisor/rtorrent.conf:/etc/supervisor/conf.d/rtorrent.conf
-
-      - /home/pi/seedbox/docker/rtorrent/.rtorrent.rc:/srv/rtorrent/.rtorrent.rc
       - /home/pi/seedbox/docker/rtorrent/config.d:/srv/rtorrent/config.d
       - /home/pi/seedbox/docker/rtorrent/script:/srv/rtorrent/script
       - /home/pi/seedbox/downloads:/srv/rtorrent/download

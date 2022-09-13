@@ -1,6 +1,5 @@
 ## Run the rTorrent process as a daemon in the background
 # mandatory for XMLRPC since rTorrent 0.9.7
-# system.daemon.set = true
 
 ## control via XMLRPC sockets
 #Local UNIX socket
