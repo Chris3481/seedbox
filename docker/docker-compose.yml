@@ -36,8 +36,8 @@ services:
       - "50000:50000"
       - "50000:50000/udp"
     environment:
-      - PUID=1000
-      - PGID=1000
+      - USER_UID=1000
+      - USER_GID=1000
     volumes:
       - /home/pi/seedbox/docker/rtorrent/config.d:/srv/rtorrent/config.d
       - /home/pi/seedbox/docker/rtorrent/script:/srv/rtorrent/script
