@@ -6,19 +6,25 @@ ENV USER_GID=$USER_UID
 
 # Create the user
 RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    && usermod -aG root $USERNAME
 
 RUN apt-get update && \
         apt-get install -y \
         rtorrent \
+        lsof \
+        net-tools \
+        xmlrpc-api-utils \
         && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir "/srv/rtorrent"
 
 COPY .rtorrent.rc /srv/rtorrent/.rtorrent.rc
+COPY start.sh /srv/rtorrent/start.sh
 
-RUN chown -R $USER_UID:$USER_GID /srv/rtorrent
+RUN chown -R $USER_UID:$USER_GID /srv/rtorrent \
+    && chmod +x /srv/rtorrent/start.sh
 
 USER $USERNAME
 
-CMD /usr/bin/rtorrent -o import=/srv/rtorrent/.rtorrent.rc
+CMD /srv/rtorrent/start.sh

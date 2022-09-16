@@ -2,12 +2,38 @@ version: "3.0"
 
 services:
 
+  vpn:
+    container_name: vpn
+    restart: unless-stopped
+    image: azinchen/nordvpn:latest
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    environment:
+      - USER=${VPN_USERNAME}
+      - PASS=${VPN_PASSWORD}
+      - COUNTRY=France
+      - GROUP=15
+      - RANDOM_TOP=3
+      - RECREATE_VPN_CRON=5 */3 * * *
+      - NETWORK=192.168.0.0/24
+      - OPENVPN_OPTS=--mute-replay-warnings
+    ports:
+      # flood web UI
+      - "3000:3000"
+      - "1194:1194/tcp"
+      - "1194:1194/udp"
+    networks:
+      - seedbox-network
+
   flood:
     container_name: flood
     restart: unless-stopped
     build: ./flood
-    ports:
-      - "3000:3000"
+    network_mode: service:vpn
+    depends_on:
+      - vpn
     environment:
       - PUID=1000
       - PGID=1000
@@ -18,19 +44,14 @@ services:
       - /home/pi/seedbox/flood-db:/data/flood-db
 
       - /home/pi/seedbox/docker/samba/smb.conf:/etc/samba/smb.conf
-    networks:
-      - seedbox-network
 
   rtorrent:
     container_name: rtorrent
     restart: unless-stopped
     build: ./rtorrent
-    ports:
-      - "16891:16891"
-      - "6881:6881"
-      - "6881:6881/udp"
-      - "50000:50000"
-      - "50000:50000/udp"
+    network_mode: service:vpn
+    depends_on:
+      - vpn
     environment:
       - USER_UID=1000
       - USER_GID=1000
@@ -83,6 +104,8 @@ services:
       - /home/pi/seedbox/downloads:/mnt:z
     # command: '-s "usbhub;/mnt;yes;no;yes;" -p' # USB Hub should have access to anyone for anything
     #command: '-s "usbhub;/mnt" -s "Bobs Volume;/mnt2;yes;no;no;bob" -u "bob;bobspasswd"'
+    #networks:
+    #  - seedbox-network
 
   minidlna:
     container_name: minidnla

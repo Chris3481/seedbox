@@ -7,5 +7,5 @@
 #execute.nothrow = chmod,770,(cat,(session.path),rpc.socket)
 
 #INET socket
-network.scgi.open_port = rtorrent:16891
+network.scgi.open_port = 127.0.0.1:16891
 # network.scgi.open_local = /srv/rtorrent/rtorrent.socket
