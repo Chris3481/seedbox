@@ -95,4 +95,8 @@ schedule2 = watch_load, 11, 10, ((load.verbose, (cat, (cfg.watch), "load/*.torre
 ## Add & download straight away
 schedule2 = watch_start, 10, 10, ((load.start_verbose, (cat, (cfg.watch), "start/*.torrent")))
 
+
+network.http.proxy_address = vpn-sock5:1081
+network.http.proxy_address.set = vpn-sock5:1081
+
 ### END of rtorrent.rc ###

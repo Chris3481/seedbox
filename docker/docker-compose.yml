@@ -2,17 +2,46 @@ version: "3.0"
 
 services:
 
+  vpn-sock5:
+    image: edgd1er/nordvpn-proxy:latest
+    restart: unless-stopped
+    ports:
+      - "1081:1080" # socks port udp or tcp
+      - "8888:8888/tcp" # http proxy tcp.
+    devices:
+      - /dev/net/tun #Optional, will be created if not preset
+    sysctls:
+      - net.ipv4.conf.all.rp_filter=2
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - TZ=America/Chicago
+      - DNS=1.1.1.1@853#cloudflare-dns.com 1.0.0.1@853#cloudflare-dns.com
+      - NORDVPN_USER=christopherdubois3@gmail.com
+      - NORDVPN_COUNTRY=germany #Optional, by default, servers in user's coyntry.
+      - NORDVPN_PROTOCOL=udp #Optional, udp by default, udp or tcp
+      - NORDVPN_CATEGORY=p2p #Optional, Africa_The_Middle_East_And_India, Asia_Pacific, Europe, Onion_Over_VPN, P2P, Standard_VPN_Servers, The_Americas
+      - NORDVPN_LOGIN=christopherdubois3@gmail.com #Not required if using secrets
+      - NORDVPN_PASS=milky*3481 #Not required if using secrets
+      - OPENVPN_PARAMETERS= #optional, empty by default, overrides openvpn config file with parameters
+      - OPENVPN_LOGLEVEL= #Optional, define openvpn verbose level 0-9
+      - EXIT_WHEN_IP_NOTASEXPECTED=0 # when detected ip is not belonging to remote vpn network
+      - LOCAL_NETWORK=192.168.0.0/24 # allow network access for socks and tinyproxy.
+      - TINYPORT=8888 #define tinyport inside the container, optional, 8888 by default,
+      - TINY_LOGLEVEL=Error #Critical (least verbose), Error, Warning, Notice, Connect (to log connections without Info's noise), Info
+      - DANTE_LOGLEVEL="error" #Optional, error by default, available values: connect disconnect error data
+      - DANTE_ERRORLOG=/dev/stdout #Optional, /dev/null by default
+      - CRON_LOGLEVEL=9 #optional, from 0 to 9, 8 default, 9 quiet.
+      - DEBUG=0 #(0/1) activate debug mode for scripts, dante, nginx, tinproxy
+    networks:
+      - seedbox-network
+
   seedbox:
     container_name: flood
     restart: unless-stopped
     build: ./flood
     ports:
       - "3000:3000"
-      # samba
-      - "137:137/udp"
-      - "138:138/udp"
-      - "139:139/tcp"
-      - "445:445/tcp"
     environment:
       - PUID=1000
       - PGID=1000
@@ -30,7 +59,10 @@ services:
     container_name: rtorrent
     restart: unless-stopped
     build: ./rtorrent
+    depends_on:
+      - vpn-sock5
     ports:
+      - "16891:16891"
       - "6881:6881"
       - "6881:6881/udp"
       - "50000:50000"
@@ -44,7 +76,9 @@ services:
       - /home/pi/seedbox/downloads:/srv/rtorrent/download
       - /home/pi/seedbox/logs:/srv/rtorrent/log
       - /home/pi/seedbox/.session:/srv/rtorrent/.session
-        
+    networks:
+      - seedbox-network
+
   samba:
     image: dperson/samba:armhf
     container_name: samba
