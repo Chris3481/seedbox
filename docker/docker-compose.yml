@@ -2,17 +2,12 @@ version: "3.0"
 
 services:
 
-  seedbox:
+  flood:
     container_name: flood
     restart: unless-stopped
     build: ./flood
     ports:
       - "3000:3000"
-      # samba
-      - "137:137/udp"
-      - "138:138/udp"
-      - "139:139/tcp"
-      - "445:445/tcp"
     environment:
       - PUID=1000
       - PGID=1000
@@ -44,8 +39,47 @@ services:
       - /home/pi/seedbox/downloads:/srv/rtorrent/download
       - /home/pi/seedbox/logs:/srv/rtorrent/log
       - /home/pi/seedbox/.session:/srv/rtorrent/.session
+        
+  samba:
+    image: dperson/samba:armhf
+    container_name: samba
+    environment:
+      TZ: Europe/Paris
+      USERID: 1000
+      GROUPID: 1000
+      # advertise shares, default: true, or false (open ports 137, 138)
+      NMBD: "true"
+      WORKGROUP: "WORKGROUP"
+      # add a single share. If you need more, use command instead of environment
+      # required arg: "<name>;</path>"
+      # <share_name>;
+      # <path_to_share>;
+      # [browsable] default:'yes' or 'no';
+      # [read_only] default:'yes' or 'no';
+      # [guest]: default: 'yes' or 'no';
+      # [users]: default: 'all' or list of allowed users;
+      # [admins] default: 'none' or list of admin users;
+      # [writelist] default: 'none' or list of users that can write to read-only share;
+      # [comment] default: 'none' or description of share
+      SHARE: "raspberry;/mnt;yes;no;yes;all;'none';'none';'Raspberry'"
     networks:
-      - seedbox-network
+      - default
+    ports:
+      - "137:137/udp" # required to advertise shares (NMBD)
+      - "138:138/udp" # required to advertise shares (NMBD)
+      - "139:139/tcp" # default smb port
+      - "445:445/tcp" # default smb port
+    read_only: true
+    tmpfs:
+      - /tmp
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    volumes:
+     # - /home/pi/seedbox/docker/samba/smb.conf:/etc/samba/smb.conf
+      - /home/pi/seedbox/downloads:/mnt:z
+    # command: '-s "usbhub;/mnt;yes;no;yes;" -p' # USB Hub should have access to anyone for anything
+    #command: '-s "usbhub;/mnt" -s "Bobs Volume;/mnt2;yes;no;no;bob" -u "bob;bobspasswd"'
 
   minidlna:
     container_name: minidnla

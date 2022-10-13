@@ -3,8 +3,6 @@ FROM node:14
 RUN apt-get update && \
         apt-get install -y \
         git \
-    	samba \
-    	smbclient \
         && rm -rf /var/lib/apt/lists/*
 
 # install flood
