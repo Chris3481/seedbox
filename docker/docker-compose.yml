@@ -26,6 +26,7 @@ services:
     restart: unless-stopped
     build: ./rtorrent
     ports:
+      - "16891:16891"
       - "6881:6881"
       - "6881:6881/udp"
       - "50000:50000"
@@ -39,7 +40,9 @@ services:
       - /home/pi/seedbox/downloads:/srv/rtorrent/download
       - /home/pi/seedbox/logs:/srv/rtorrent/log
       - /home/pi/seedbox/.session:/srv/rtorrent/.session
-        
+    networks:
+      - seedbox-network
+
   samba:
     image: dperson/samba:armhf
     container_name: samba
