@@ -2,12 +2,41 @@ version: "3.0"
 
 services:
 
+  vpn:
+    container_name: vpn
+    restart: unless-stopped
+    image: qmcgaw/gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - 8888:8888/tcp # HTTP proxy
+      - 8388:8388/tcp # Shadowsocks
+      - 8388:8388/udp # Shadowsocks
+      # Flood
+      - "3000:3000"
+      # rtorrent
+      - "16891:16891"
+      - "6881:6881"
+      - "6881:6881/udp"
+      - "50000:50000"
+      - "50000:50000/udp"
+    volumes:
+      - /home/pi/seedbox/vpn:/gluetun
+    environment:
+      - VPN_SERVICE_PROVIDER=purevpn
+      - OPENVPN_USER=purevpn0d11854043
+      - OPENVPN_PASSWORD=vmj3hwxu
+      - TZ=Europe/Paris
+
   flood:
     container_name: flood
     restart: unless-stopped
     build: ./flood
-    ports:
-      - "3000:3000"
+    network_mode: service:vpn
+    depends_on:
+      - vpn
     environment:
       - PUID=1000
       - PGID=1000
@@ -18,19 +47,14 @@ services:
       - /home/pi/seedbox/flood-db:/data/flood-db
 
       - /home/pi/seedbox/docker/samba/smb.conf:/etc/samba/smb.conf
-    networks:
-      - seedbox-network
 
   rtorrent:
     container_name: rtorrent
     restart: unless-stopped
     build: ./rtorrent
-    ports:
-      - "16891:16891"
-      - "6881:6881"
-      - "6881:6881/udp"
-      - "50000:50000"
-      - "50000:50000/udp"
+    network_mode: service:vpn
+    depends_on:
+      - vpn
     environment:
       - USER_UID=1000
       - USER_GID=1000
@@ -40,8 +64,6 @@ services:
       - /home/pi/seedbox/downloads:/srv/rtorrent/download
       - /home/pi/seedbox/logs:/srv/rtorrent/log
       - /home/pi/seedbox/.session:/srv/rtorrent/.session
-    networks:
-      - seedbox-network
 
   samba:
     image: dperson/samba:armhf

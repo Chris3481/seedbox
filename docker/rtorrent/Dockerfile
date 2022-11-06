@@ -21,4 +21,4 @@ RUN chown -R $USER_UID:$USER_GID /srv/rtorrent
 
 USER $USERNAME
 
-CMD /usr/bin/rtorrent -o import=/srv/rtorrent/.rtorrent.rc
+CMD /usr/bin/rtorrent -o import=/srv/rtorrent/.rtorrent.rc -b 0.0.0.0 -i 82.64.237.77
