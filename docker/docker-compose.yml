@@ -11,23 +11,22 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     ports:
-      - 8888:8888/tcp # HTTP proxy
-      - 8388:8388/tcp # Shadowsocks
-      - 8388:8388/udp # Shadowsocks
+      # openvpn port
+      - "1194:1194/udp"
       # Flood
       - "3000:3000"
       # rtorrent
       - "16891:16891"
       - "6881:6881"
-      - "6881:6881/udp"
       - "50000:50000"
-      - "50000:50000/udp"
     volumes:
       - /home/pi/seedbox/vpn:/gluetun
     environment:
-      - VPN_SERVICE_PROVIDER=purevpn
-      - OPENVPN_USER=purevpn0d11854043
-      - OPENVPN_PASSWORD=vmj3hwxu
+      - VPN_SERVICE_PROVIDER=custom
+      - OPENVPN_CUSTOM_CONFIG=/gluetun/raspberry.ovpn
+      - FIREWALL=on
+      - FIREWALL_VPN_INPUT_PORTS=3000,50000,6881
+      - FIREWALL_DEBUG=on
       - TZ=Europe/Paris
 
   flood:
