@@ -31,7 +31,7 @@ trackers.use_udp.set = yes
 
 
 ## Peer settings
-throttle.max_uploads.set = 100
+throttle.max_uploads.set = 200
 throttle.max_uploads.global.set = 250
 
 throttle.min_peers.normal.set = 20
@@ -55,8 +55,8 @@ network.max_open_sockets.set = 300
 ## and/or the available resources to spend)
 # I ve set 512M because I will run it on a RPi, I may can increase it
 # after some tests
-pieces.memory.max.set = 512M
-network.xmlrpc.size_limit.set = 16M
+pieces.memory.max.set = 1024M
+network.xmlrpc.size_limit.set = 32M
 
 
 ## Basic operational settings (no need to change these)
