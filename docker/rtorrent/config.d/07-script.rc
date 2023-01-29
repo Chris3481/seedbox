@@ -1,1 +1,0 @@
-# method.set_key = event.download.finished,move_finished_file,"execute2={/srv/rtorrent/script/moveFinishedTorrent.sh, $d.name=, $d.base_path=, $d.hash=}"
