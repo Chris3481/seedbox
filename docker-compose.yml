@@ -20,57 +20,54 @@ services:
       - "6881:6881"
       - "50000:50000"
     volumes:
-      - /home/pi/seedbox/vpn:/gluetun
+      - ${BASE_PATH}/vpn:/gluetun
     environment:
       - VPN_SERVICE_PROVIDER=custom
       - OPENVPN_CUSTOM_CONFIG=/gluetun/raspberry.ovpn
       - FIREWALL=on
       - FIREWALL_VPN_INPUT_PORTS=3000,50000,6881
       - FIREWALL_DEBUG=on
-      - TZ=Europe/Paris
+      - TZ=${TIMEZONE}
 
   flood:
     container_name: flood
     restart: unless-stopped
-    build: ./flood
+    build: docker/flood
     network_mode: service:vpn
     depends_on:
       - vpn
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID=${USER_ID}
+      - PGID=${GROUP_ID}
     volumes:
-      - /home/pi/seedbox/downloads:/srv/rtorrent/download
+      - ${DOWNLOAD_FOLDER_PATH}:/srv/rtorrent/download
 
-      - /home/pi/seedbox/docker/flood/config.js:/srv/flood/config.js
-      - /home/pi/seedbox/flood-db:/data/flood-db
-
-      - /home/pi/seedbox/docker/samba/smb.conf:/etc/samba/smb.conf
+      - ${BASE_PATH}/docker/flood/config.js:/srv/flood/config.js
+      - ${BASE_PATH}/data/flood-db:/data/flood-db
 
   rtorrent:
     container_name: rtorrent
     restart: unless-stopped
-    build: ./rtorrent
+    build: docker/rtorrent
     network_mode: service:vpn
     depends_on:
       - vpn
     environment:
-      - USER_UID=1000
-      - USER_GID=1000
+      - USER_UID=${USER_ID}
+      - USER_GID=${GROUP_ID}
     volumes:
-      - /home/pi/seedbox/docker/rtorrent/config.d:/srv/rtorrent/config.d
-      - /home/pi/seedbox/docker/rtorrent/script:/srv/rtorrent/script
-      - /home/pi/seedbox/downloads:/srv/rtorrent/download
-      - /home/pi/seedbox/logs:/srv/rtorrent/log
-      - /home/pi/seedbox/.session:/srv/rtorrent/.session
+      - ${BASE_PATH}/docker/rtorrent/config.d:/srv/rtorrent/config.d
+      - ${BASE_PATH}/downloads:/srv/rtorrent/download
+      - ${BASE_PATH}/logs:/srv/rtorrent/log
+      - ${BASE_PATH}/data/session:/srv/rtorrent/.session
 
   samba:
     image: dperson/samba:armhf
     container_name: samba
     environment:
-      TZ: Europe/Paris
-      USERID: 1000
-      GROUPID: 1000
+      TZ: ${TIMEZONE}
+      USERID: ${USER_ID}
+      GROUPID: ${GROUP_ID}
       # advertise shares, default: true, or false (open ports 137, 138)
       NMBD: "true"
       WORKGROUP: "WORKGROUP"
@@ -101,7 +98,7 @@ services:
     tty: true
     volumes:
      # - /home/pi/seedbox/docker/samba/smb.conf:/etc/samba/smb.conf
-      - /home/pi/seedbox/downloads:/mnt:z
+      - ${DOWNLOAD_FOLDER_PATH}:/mnt:z
     # command: '-s "usbhub;/mnt;yes;no;yes;" -p' # USB Hub should have access to anyone for anything
     #command: '-s "usbhub;/mnt" -s "Bobs Volume;/mnt2;yes;no;no;bob" -u "bob;bobspasswd"'
 
@@ -110,7 +107,7 @@ services:
     restart: unless-stopped
     image: cytomich/rpi-docker-minidlna
     volumes:
-      - /home/pi/seedbox/downloads:/media:z
+      - ${DOWNLOAD_FOLDER_PATH}:/media:z
     environment:
       - MINIDLNA_MEDIA_DIR=/media
       - MINIDLNA_PORT=8200

@@ -16,7 +16,9 @@ RUN apt-get update && \
         net-tools \
         && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir "/srv/rtorrent"
+RUN mkdir "/srv/rtorrent" \
+     && mkdir "/srv/rtorrent/download" \
+     && mkdir "/srv/rtorrent/log"
 
 COPY .rtorrent.rc /srv/rtorrent/.rtorrent.rc
 COPY start.sh /srv/rtorrent/start.sh

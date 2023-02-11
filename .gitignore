@@ -1,1 +1,7 @@
 .idea
+.env
+docker/rtorrent/config.d/.import
+vpn/*
+downloads/*
+data/*
+logs/*
