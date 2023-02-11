@@ -32,29 +32,37 @@ trackers.use_udp.set = yes
 
 ## Peer settings
 throttle.max_uploads.set = 200
-throttle.max_uploads.global.set = 250
+throttle.max_uploads.global.set = 300
 
 throttle.min_peers.normal.set = 20
 throttle.max_peers.normal.set = 60
-throttle.min_peers.seed.set = 30
-throttle.max_peers.seed.set = 80
-trackers.numwant.set = 80
+throttle.min_peers.seed.set = -1
+throttle.max_peers.seed.set = -1
+trackers.numwant.set = 100
+throttle.max_downloads.global.set = 150
 
-protocol.encryption.set = allow_incoming,try_outgoing,enable_retry
+system.file.allocate.set = 1
+
+protocol.encryption.set = allow_incoming,enable_retry,prefer_plaintext
 
 
 ## Limits for file handle resources, this is optimized for
 ## an `ulimit` of 1024 (a common default). You MUST leave
 ## a ceiling of handles reserved for rTorrent s internal needs!
-network.http.max_open.set = 50
-network.max_open_files.set = 600
-network.max_open_sockets.set = 300
+
+network.max_open_files.set = 4096
+network.max_open_sockets.set = 1536
+network.http.max_open.set = 99
+network.send_buffer.size.set = 64M
+network.receive_buffer.size.set = 4M
 
 
 ## Memory resource usage (increase if you have a large number of items loaded,
 ## and/or the available resources to spend)
-# I ve set 512M because I will run it on a RPi, I may can increase it
-# after some tests
+
+# Set the max amount of memory address space used to mapping file chunks. This refers to memory mapping, not
+#  physical memory allocation. Default: `1GB` (`max_memory_usage`)
+# This may also be set using ulimit -m where 3/4 will be allocated to file chunks.
 pieces.memory.max.set = 1024M
 network.xmlrpc.size_limit.set = 32M
 
@@ -76,7 +84,7 @@ schedule2 = monitor_diskspace, 15, 60, ((close_low_diskspace, 1000M))
 #view.sort_current = seeding, greater=d.ratio=
 #keys.layout.set = qwerty
 #network.http.capath.set = "/etc/ssl/certs"
-#network.http.ssl_verify_peer.set = 0
+network.http.ssl_verify_peer.set = 0
 #network.http.ssl_verify_host.set = 0
 
 
