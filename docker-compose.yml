@@ -32,7 +32,7 @@ services:
   flood:
     container_name: flood
     restart: unless-stopped
-    build: docker/flood
+    image: ghcr.io/chris3481/flood:latest
     network_mode: service:vpn
     depends_on:
       - vpn
@@ -48,7 +48,7 @@ services:
   rtorrent:
     container_name: rtorrent
     restart: unless-stopped
-    build: docker/rtorrent
+    image: ghcr.io/chris3481/rtorrent:latest
     network_mode: service:vpn
     depends_on:
       - vpn
