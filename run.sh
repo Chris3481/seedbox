@@ -8,4 +8,4 @@ mkdir -p ${BASE_PATH}/logs
 mkdir -p ${BASE_PATH}/vpn
 mkdir -p ${DOWNLOAD_FOLDER_PATH}
 
-docker-compose up -d
+docker-compose -f docker-vpn-service.yml -f docker-local-services.yml -f docker-seedbox-services.yml  up -d

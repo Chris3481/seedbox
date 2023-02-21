@@ -1,0 +1,35 @@
+version: "3.0"
+
+services:
+
+  flood:
+    container_name: flood
+    restart: unless-stopped
+    image: ghcr.io/chris3481/flood:latest
+    network_mode: service:vpn
+    depends_on:
+      - vpn
+    environment:
+      - PUID=${USER_ID}
+      - PGID=${GROUP_ID}
+    volumes:
+      - ${DOWNLOAD_FOLDER_PATH}:/srv/rtorrent/download
+
+      - ${BASE_PATH}/docker/flood/config.js:/srv/flood/config.js
+      - ${BASE_PATH}/data/flood-db:/data/flood-db
+
+  rtorrent:
+    container_name: rtorrent
+    restart: unless-stopped
+    image: ghcr.io/chris3481/rtorrent:latest
+    network_mode: service:vpn
+    depends_on:
+      - vpn
+    environment:
+      - USER_UID=${USER_ID}
+      - USER_GID=${GROUP_ID}
+    volumes:
+      - ${BASE_PATH}/docker/rtorrent/config.d:/srv/rtorrent/config.d
+      - ${BASE_PATH}/downloads:/srv/rtorrent/download
+      - ${BASE_PATH}/logs:/srv/rtorrent/log
+      - ${BASE_PATH}/data/session:/srv/rtorrent/.session

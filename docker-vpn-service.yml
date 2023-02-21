@@ -1,0 +1,30 @@
+version: "3.0"
+
+services:
+
+  vpn:
+    container_name: vpn
+    restart: unless-stopped
+    image: qmcgaw/gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      # openvpn port
+      - "1194:1194/udp"
+      # Flood
+      - "3000:3000"
+      # rtorrent
+      - "16891:16891"
+      - "6881:6881"
+      - "50000:50000"
+    volumes:
+      - ${BASE_PATH}/vpn:/gluetun
+    environment:
+      - VPN_SERVICE_PROVIDER=custom
+      - OPENVPN_CUSTOM_CONFIG=/gluetun/raspberry.ovpn
+      - FIREWALL=on
+      - FIREWALL_VPN_INPUT_PORTS=3000,50000,6881
+      - FIREWALL_DEBUG=on
+      - TZ=${TIMEZONE}
