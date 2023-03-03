@@ -52,3 +52,16 @@ services:
       - MINIDLNA_PORT=8200
       - MINIDLNA_FRIENDLY_NAME=Raspberry
     network_mode: "host"
+
+  filebrowser:
+    container_name: filebrowser
+    restart: unless-stopped
+    image: filebrowser/filebrowser
+    ports:
+      - "8080:80"
+    volumes:
+      - ${BASE_PATH}/data/filebrowser/data:/data
+      - ${BASE_PATH}/data/filebrowser/config:/config
+      - ${DOWNLOAD_FOLDER_PATH}/:/srv
+    environment:
+      - FB_BASEURL=${DOWNLOAD_FOLDER_PATH}
