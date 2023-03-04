@@ -24,8 +24,6 @@ services:
       # [writelist] default: 'none' or list of users that can write to read-only share;
       # [comment] default: 'none' or description of share
       SHARE: "raspberry;/mnt;yes;no;yes;all;'none';'none';'Raspberry'"
-    networks:
-      - default
     ports:
       - "137:137/udp" # required to advertise shares (NMBD)
       - "138:138/udp" # required to advertise shares (NMBD)
