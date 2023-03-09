@@ -1,10 +1,13 @@
 #!/bin/bash
 
 
-while ! ifconfig -s | grep tun0; do
-    echo "Waiting for vpn connexion"
-    sleep 1
-done
+if [ $ENABLE_VPN == 'true' ]; then
+
+  while ! ifconfig -s | grep tun0; do
+      echo "Waiting for vpn connexion"
+      sleep 1
+  done
+fi
 
 
 VPN_IP=$(curl ifconfig.me)

@@ -1,13 +1,17 @@
 #!/bin/bash
 
+# exit when any command fails
+set -e
+
 # Export env vars
 export $(grep -v '^#' .env | xargs)
 
-
 # Define existing services we can run
-allowed_services=("all" "vpn" "seedbox" "local")
+allowed_services=("all" "vpn" "seedbox" "media")
 
 function boot() {
+
+  init_docker_compose_files;
 
   case $1 in
 
@@ -33,7 +37,7 @@ function boot() {
   esac
 }
 
-
+# Start services
 function run() {
 
   init_folders;
@@ -42,31 +46,29 @@ function run() {
     services='all';
   fi
 
-  err=$(validate_services $services)
-  if [[ $services != '' ]]; then
-    echo $err;
-  fi
+  $(validate_services $services);
 
-  docker_compose_files=$(get_docker_compose_files_from_services $services);
+  containers=$(get_containers $services);
 
-  docker-compose $docker_compose_files up -d
+  command=$(get_docker_compose_command);
+
+  eval "${command} up -d ${containers}";
 }
 
-
+# Stop services
 function stop() {
 
   if [[ $services == '' ]]; then
     services='all';
   fi
 
-    err=$(validate_services $services)
-    if [[ $services != '' ]]; then
-      echo $err;
-    fi
+  $(validate_services $services);
 
-  docker_compose_files=$(get_docker_compose_files_from_services $services);
+  containers=$(get_containers $services);
 
-  docker-compose $docker_compose_files down
+  command=$(get_docker_compose_command);
+
+  eval "${command} stop ${containers} && ${command} rm -f ${containers}";
 }
 
 
@@ -79,15 +81,31 @@ function validate_services() {
   do
     if [[ ! " ${allowed_services[*]} " =~ " ${service} " ]]; then
         echo "Unknown service [$service]"
-        exit;
+        exit 1;
     fi
   done
 }
 
 
-function get_docker_compose_files_from_services() {
+function init_docker_compose_files() {
 
- services_arr=$(echo $1 | tr "," "\n")
+  COMPOSE_FILE="docker-seedbox-services.yml";
+  COMPOSE_FILE="${COMPOSE_FILE}:docker-vpn-service.yml";
+  COMPOSE_FILE="${COMPOSE_FILE}:docker-local-services.yml";
+
+  export COMPOSE_FILE=$COMPOSE_FILE;
+}
+
+function get_containers() {
+
+  VPN_CONTAINERS='vpn';
+  MEDIA_CONTAINERS='samba minidlna filebrowser';
+  SEEDBOX_VPN_CONTAINERS='flood-vpn rtorrent-vpn';
+  SEEDBOX_STANDALONE_CONTAINERS='flood-standalone rtorrent-standalone';
+
+  services_arr=$(echo $1 | tr "," "\n");
+
+  CONTAINERS='';
 
   for service in $services_arr
   do
@@ -99,30 +117,59 @@ function get_docker_compose_files_from_services() {
 
     # Map service to docker-compose file
     if [[ $services == 'all' ]]; then
-      docker_compose_files='-f docker-vpn-service.yml -f docker-seedbox-services.yml -f docker-local-services.yml ';
+
+      if [[ $ENABLE_VPN == 'true' ]]; then
+        CONTAINERS="${CONTAINERS} ${VPN_CONTAINERS} ${SEEDBOX_VPN_CONTAINERS} ${MEDIA_CONTAINERS}"
+      else
+        CONTAINERS="${CONTAINERS} ${SEEDBOX_STANDALONE_CONTAINERS} ${MEDIA_CONTAINERS}"
+      fi
     fi
 
-    if [[ $service == "vpn" ]]; then
-      docker_compose_files="${docker_compose_files} -f docker-vpn-service.yml";
+    if [ $service == "vpn" ] && [ $ENABLE_VPN == 'true' ]; then
+       CONTAINERS="${CONTAINERS} ${VPN_CONTAINERS}";
     fi
 
     if [[ $service == "seedbox" ]]; then
-      docker_compose_files="${docker_compose_files} -f docker-seedbox-services.yml";
+
+      if [[ $ENABLE_VPN == 'true' ]]; then
+        CONTAINERS="${CONTAINERS} ${VPN_CONTAINERS} ${SEEDBOX_VPN_CONTAINERS}"
+      else
+        CONTAINERS="${CONTAINERS} ${SEEDBOX_STANDALONE_CONTAINERS}"
+      fi
     fi
 
-    if [[ $service == "local" ]]; then
-      docker_compose_files="${docker_compose_files} -f docker-local-services.yml";
+    if [[ $service == "media" ]]; then
+      CONTAINERS="${CONTAINERS} ${MEDIA_CONTAINERS}";
     fi
   done
 
-  echo $docker_compose_files;
+  echo $CONTAINERS;
+}
+
+function get_docker_compose_command() {
+
+  if command -v docker-compose &> /dev/null
+  then
+      echo "docker-compose"
+      exit
+  fi
+
+  if command -v docker compose &> /dev/null
+    then
+        echo "docker compose"
+        exit
+    fi
+
+  echo "docker compose is not installed";
+
+  exit 1;
 }
 
 function init_folders() {
 
   mkdir -p ${BASE_PATH}/data
-  mkdir -p ${BASE_PATH}/data/filebrowser/data
-  mkdir -p ${BASE_PATH}/data/filebrowser/config
+  mkdir -p ${BASE_PATH}/data/filebrowser
+  mkdir -p ${BASE_PATH}/data/rtorrent/sessions
   mkdir -p ${BASE_PATH}/logs
   mkdir -p ${BASE_PATH}/vpn
   mkdir -p ${DOWNLOAD_FOLDER_PATH}
