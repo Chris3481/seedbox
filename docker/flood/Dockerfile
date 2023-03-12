@@ -13,4 +13,4 @@ RUN cd /srv/flood && \
      npm install && \
      npm run build
 
-CMD npm start --prefix /srv/flood/
+CMD npx --prefix /srv/flood/ flood start -h 0.0.0.0 -d /data/flood-db
