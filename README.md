@@ -36,8 +36,16 @@ Mount your seedbox download folder on any Windows or Linux computer
 
 ### 🛠️ Installation
 
-Clone the project : `git clone https://github.com/Chris3481/seedbox.git` 
+1) Clone the project : `git clone https://github.com/Chris3481/seedbox.git`
+ 
+2) Create your .env file : `cp .env.example .env`
 
-Create your .env file : `cp .env.example .env` 
+3) If you want to enable VPN tunnel, copy your `.ovpn` file into `vpn` folder (you should create it on the root project directory)
 
-Run `./seedbox.sh run`
+4) Run `./seedbox.sh run`
+
+Access flood interface on `http://<server-ip>:3000` 
+
+Create a new admin user
+
+![alt text](docs/rtorrent-conf.png)
