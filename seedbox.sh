@@ -100,8 +100,8 @@ function get_containers() {
 
   VPN_CONTAINERS='vpn';
   MEDIA_CONTAINERS='samba minidlna filebrowser';
-  SEEDBOX_VPN_CONTAINERS='flood-vpn rtorrent-vpn';
-  SEEDBOX_STANDALONE_CONTAINERS='flood-standalone rtorrent-standalone';
+  SEEDBOX_VPN_CONTAINERS='flood-vpn rtorrent-vpn qbittorrent-vpn';
+  SEEDBOX_STANDALONE_CONTAINERS='flood-standalone rtorrent-standalone qbittorrent-standalone';
 
   services_arr=$(echo $1 | tr "," "\n");
 
