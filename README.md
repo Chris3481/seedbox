@@ -49,3 +49,19 @@ Access flood interface on `http://<server-ip>:3000`
 Create a new admin user
 
 ![alt text](docs/rtorrent-conf.png)
+
+---
+
+### ⚙️ Configuration 
+
+| Variable              | Description                                                 |      default |
+|-----------------------|:------------------------------------------------------------|-------------:|
+| USER_ID               | Host user ID.<br> You can find if with the command `id -u`  |         1000 |
+| GROUP_ID              | Host group ID.<br> You can find if with the command `id -g` |         1000 |
+| TIMEZONE              | Your timezone.<br>                                          | Europe/Paris |
+| ENABLE_VPN            | Use openVpn tunnel.<br> requires installation step 3        |        false |
+| FLOOD_PORT            | Port to access flood interface                              |         3000 |
+| WEB_BROWSER_PORT      | Port to access web file browser                             |         8080 |
+| BASE_PATH             | Project base path                                           |              |
+| DOWNLOAD_FOLDER_PATH  | Download folder path                                        |              |
+
