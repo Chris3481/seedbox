@@ -51,8 +51,8 @@ services:
     <<: *rtorrent-base
     ports:
       - "16891:16891"
-      - "6881:6881"
-      - "50000:50000"
+      - ${RTORRENT_DHT_PORT}:${RTORRENT_DHT_PORT}
+      - ${RTORRENT_PEER_PORT}:${RTORRENT_PEER_PORT}
     networks:
       - seedbox-network
 
@@ -64,7 +64,7 @@ services:
     restart: unless-stopped
     image: gists/qbittorrent:4.4.3
     environment:
-      - PEER_PORT=6881
+      - PEER_PORT=${QBITTOTTENT_PEER_PORT}
       - WEB_PORT=8080
       - UID=${USER_ID}
       - GID=${GROUP_ID}
@@ -80,8 +80,8 @@ services:
     <<: *qbittorrent-base
     ports:
       - "8080:8080"
-      - "6882:6881"
-      - "6881:6881/udp"
+      - "${QBITTOTTENT_PEER_PORT}:${QBITTOTTENT_PEER_PORT}"
+      - "${QBITTOTTENT_PEER_PORT}:${QBITTOTTENT_PEER_PORT}/udp"
     networks:
       - seedbox-network
 
