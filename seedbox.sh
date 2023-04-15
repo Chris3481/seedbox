@@ -8,6 +8,7 @@ export $(grep -v '^#' .env | xargs)
 
 # Define existing services we can run
 allowed_services=("all" "vpn" "seedbox" "media")
+allowed_torrent_clients=("rtorrent" "qbittorrent")
 
 function boot() {
 
@@ -98,10 +99,16 @@ function init_docker_compose_files() {
 
 function get_containers() {
 
+  # Check if torrent client exists
+  if [[ ! " ${allowed_torrent_clients[*]} " =~ " $TORRENT_CLIENT " ]]; then
+      echo "Unknown torrent client [$TORRENT_CLIENT]"
+      exit 1;
+  fi
+
   VPN_CONTAINERS='vpn';
   MEDIA_CONTAINERS='samba minidlna filebrowser';
-  SEEDBOX_VPN_CONTAINERS='flood-vpn rtorrent-vpn';
-  SEEDBOX_STANDALONE_CONTAINERS='flood-standalone rtorrent-standalone';
+  SEEDBOX_VPN_CONTAINERS="flood-vpn $TORRENT_CLIENT-vpn";
+  SEEDBOX_STANDALONE_CONTAINERS="flood-standalone $TORRENT_CLIENT-standalone";
 
   services_arr=$(echo $1 | tr "," "\n");
 

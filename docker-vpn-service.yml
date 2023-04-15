@@ -14,17 +14,19 @@ services:
       # openvpn port
       - "1194:1194/udp"
       # Flood
-      - "3000:3000"
+      - ${FLOOD_PORT}:${FLOOD_PORT}
       # rtorrent
       - "16891:16891"
-      - "6881:6881"
-      - "50000:50000"
+      - ${RTORRENT_PEER_PORT}:${RTORRENT_PEER_PORT}
+      - ${RTORRENT_DHT_PORT}:${RTORRENT_DHT_PORT}
+      # qBittorrent
+      - ${QBITTOTTENT_PEER_PORT}:${QBITTOTTENT_PEER_PORT}
     volumes:
       - ${BASE_PATH}/vpn:/gluetun
     environment:
       - VPN_SERVICE_PROVIDER=custom
       - OPENVPN_CUSTOM_CONFIG=/gluetun/raspberry.ovpn
       - FIREWALL=on
-      - FIREWALL_VPN_INPUT_PORTS=3000,50000,6881
+      - FIREWALL_VPN_INPUT_PORTS=3000,${RTORRENT_PEER_PORT},${RTORRENT_DHT_PORT},${QBITTOTTENT_PEER_PORT}
       - FIREWALL_DEBUG=on
       - TZ=${TIMEZONE}
