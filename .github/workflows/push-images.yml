@@ -6,12 +6,12 @@ on:
 #      - master
     tags:
       - '*'
-  pull_request:
-    branches:
-      - "master"
+#  pull_request:
+#    branches:
+#      - "master"
 
 env:
-  TARGET_PLATFORMS: linux/amd64,linux/arm64
+  TARGET_PLATFORMS: linux/amd64,linux/arm64,linux/arm/v7
   REGISTRY: ghcr.io/chris3481
 
 jobs:
