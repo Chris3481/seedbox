@@ -1,0 +1,21 @@
+version: "3.0"
+
+services:
+
+  ########################################################################
+  # Sonarr
+  ########################################################################
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=${USER_ID}
+      - PGID=${GROUP_ID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${BASE_PATH}/data/sonarr:/config
+      #- /path/to/tvseries:/tv #optional
+      #- /path/to/downloadclient-downloads:/downloads #optional
+    ports:
+      - 8989:8989
+    restart: unless-stopped
