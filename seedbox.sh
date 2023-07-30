@@ -7,7 +7,7 @@ set -e
 export $(grep -v '^#' .env | xargs)
 
 # Define existing services we can run
-allowed_services=("all" "vpn" "seedbox" "media")
+allowed_services=("all" "vpn" "seedbox" "media" "streaming")
 allowed_torrent_clients=("rtorrent" "qbittorrent")
 
 function boot() {
@@ -93,6 +93,7 @@ function init_docker_compose_files() {
   COMPOSE_FILE="docker-seedbox-services.yml";
   COMPOSE_FILE="${COMPOSE_FILE}:docker-vpn-service.yml";
   COMPOSE_FILE="${COMPOSE_FILE}:docker-local-services.yml";
+  COMPOSE_FILE="${COMPOSE_FILE}:docker-streaming-services.yml";
 
   export COMPOSE_FILE=$COMPOSE_FILE;
 }
@@ -107,6 +108,7 @@ function get_containers() {
 
   VPN_CONTAINERS='vpn';
   MEDIA_CONTAINERS='samba minidlna filebrowser';
+  STREAMING_CONTAINERS='jellyfin';
   SEEDBOX_VPN_CONTAINERS="flood-vpn $TORRENT_CLIENT-vpn";
   SEEDBOX_STANDALONE_CONTAINERS="flood-standalone $TORRENT_CLIENT-standalone";
 
@@ -126,7 +128,7 @@ function get_containers() {
     if [[ $services == 'all' ]]; then
 
       if [[ $ENABLE_VPN == 'true' ]]; then
-        CONTAINERS="${CONTAINERS} ${VPN_CONTAINERS} ${SEEDBOX_VPN_CONTAINERS} ${MEDIA_CONTAINERS}"
+        CONTAINERS="${CONTAINERS} ${VPN_CONTAINERS} ${SEEDBOX_VPN_CONTAINERS} ${MEDIA_CONTAINERS} ${STREAMING_CONTAINERS}"
       else
         CONTAINERS="${CONTAINERS} ${SEEDBOX_STANDALONE_CONTAINERS} ${MEDIA_CONTAINERS}"
       fi
@@ -148,6 +150,10 @@ function get_containers() {
     if [[ $service == "media" ]]; then
       CONTAINERS="${CONTAINERS} ${MEDIA_CONTAINERS}";
     fi
+
+    if [[ $service == "streaming" ]]; then
+          CONTAINERS="${CONTAINERS} ${STREAMING_CONTAINERS}";
+        fi
   done
 
   echo $CONTAINERS;
@@ -192,9 +198,9 @@ cat <<EOF
 
   Syntax: seedbox [...option]
   options :
-    run     [all|vpn|seedbox|local]      Run services         | comma separated list of services
-    stop    [all|vpn|seedbox|local]      Stop all services    | comma separated list of services
-    restart [all|vpn|seedbox|local]      Restart all services | comma separated list of services
+    run     [all|vpn|seedbox|local|streaming]      Run services         | comma separated list of services
+    stop    [all|vpn|seedbox|local|streaming]      Stop all services    | comma separated list of services
+    restart [all|vpn|seedbox|local|streaming]      Restart all services | comma separated list of services
 
 EOF
 }
