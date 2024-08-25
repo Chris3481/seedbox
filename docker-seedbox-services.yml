@@ -78,34 +78,6 @@ services:
     networks:
       - seedbox-network
 
-  ########################################################################
-  # qBittorrent
-  ########################################################################
-  qbittorrent-base: &qbittorrent-base
-    container_name: qbittorrent
-    restart: unless-stopped
-    image: gists/qbittorrent:4.4.3
-    environment:
-      - PEER_PORT=${QBITTOTTENT_PEER_PORT}
-      - WEB_PORT=8080
-      - UID=${USER_ID}
-      - GID=${GROUP_ID}
-    volumes:
-      - ${BASE_PATH}/data/qBittorrent:/data/.config/qBittorrent
-      - ${DOWNLOAD_FOLDER_PATH}:/data/downloads
-
-  qbittorrent-vpn:
-    <<: *qbittorrent-base
-    network_mode: service:vpn
-
-  qbittorrent-standalone:
-    <<: *qbittorrent-base
-    ports:
-      - "8080:8080"
-      - "${QBITTOTTENT_PEER_PORT}:${QBITTOTTENT_PEER_PORT}"
-      - "${QBITTOTTENT_PEER_PORT}:${QBITTOTTENT_PEER_PORT}/udp"
-    networks:
-      - seedbox-network
 
 networks:
   seedbox-network:
