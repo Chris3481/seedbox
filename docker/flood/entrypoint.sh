@@ -5,7 +5,7 @@ start_flood() {
   echo "Starting Flood..."
   npx --prefix /srv/flood/ flood start -h 0.0.0.0 -d /data/flood-db &
   echo "Waiting for Flood to start..."
-  sleep 5
+  sleep 20
 }
 
 # Function for authentication and retrieving JWT
