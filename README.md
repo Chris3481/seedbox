@@ -61,8 +61,8 @@ Access flood interface on `http://<server-ip>:3000`
 | ENABLE_VPN             | Use openVpn tunnel.<br> requires installation step 3        |        false |
 | TORRENT_CLIENT         | Choose torrent client rtorrent                              |     rtorrent |
 | FLOOD_PORT             | Port to access flood interface                              |         3000 |
-| FLOOD_ADMIN_USERNAME   | flood admin user name                                       |         8080 |
-| FLOOD_ADMIN_PASSWORD   | flood password admin password                               |         8080 |
+| FLOOD_ADMIN_USERNAME   | flood admin user name                                       |              |
+| FLOOD_ADMIN_PASSWORD   | flood password admin password                               |              |
 | RTORRENT_PEER_PORT     | Rtorrent port used for peer connexions                      |        50000 |
 | RTORRENT_DHT_PORT      | Rtorrent port used for DHT                                  |         6882 |
 | WEB_BROWSER_PORT       | Port to access web file browser                             |         8080 |
