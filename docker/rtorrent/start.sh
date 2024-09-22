@@ -10,7 +10,7 @@ if [ $ENABLE_VPN == 'true' ]; then
 fi
 
 
-VPN_IP=$(curl ifconfig.me)
+VPN_IP=$(curl -4 ifconfig.me )
 
 echo "bind rtorrent on IP $VPN_IP"
 
