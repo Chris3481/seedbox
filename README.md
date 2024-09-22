@@ -48,9 +48,6 @@ Mount your seedbox download folder on any Windows or Linux computer
 
 Access flood interface on `http://<server-ip>:3000` 
 
-Create a new admin user
-
-![alt text](docs/rtorrent-conf.png)
 
 ---
 
@@ -62,12 +59,13 @@ Create a new admin user
 | GROUP_ID               | Host group ID.<br> You can find if with the command `id -g` |         1000 |
 | TIMEZONE               | Your timezone.<br>                                          | Europe/Paris |
 | ENABLE_VPN             | Use openVpn tunnel.<br> requires installation step 3        |        false |
-| TORRENT_CLIENT         | Choose torrent client rtorrent / qbitorrent                 |     rtorrent |
+| TORRENT_CLIENT         | Choose torrent client rtorrent                              |     rtorrent |
 | FLOOD_PORT             | Port to access flood interface                              |         3000 |
-| WEB_BROWSER_PORT       | Port to access web file browser                             |         8080 |
+| FLOOD_ADMIN_USERNAME   | flood admin user name                                       |         8080 |
+| FLOOD_ADMIN_PASSWORD   | flood password admin password                               |         8080 |
 | RTORRENT_PEER_PORT     | Rtorrent port used for peer connexions                      |        50000 |
 | RTORRENT_DHT_PORT      | Rtorrent port used for DHT                                  |         6882 |
-| QBITTOTTENT_PEER_PORT  | Qbittorrent port used for peer connexions                   |         6881 |
+| WEB_BROWSER_PORT       | Port to access web file browser                             |         8080 |
 | BASE_PATH              | Project base path                                           |              |
 | DOWNLOAD_FOLDER_PATH   | Download folder path                                        |              |
 

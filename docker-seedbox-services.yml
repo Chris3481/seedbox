@@ -20,9 +20,11 @@ services:
     environment:
       - PUID=${USER_ID}
       - PGID=${GROUP_ID}
+      - FLOOD_ADMIN_USERNAME=${FLOOD_ADMIN_USERNAME}
+      - FLOOD_ADMIN_PASSWORD=${FLOOD_ADMIN_PASSWORD}
     volumes:
       - ${BASE_PATH}/docker/flood/config.js:/srv/flood/config.js
-      - ${BASE_PATH}/data/flood-db:/data/flood-db
+#      - ${BASE_PATH}/data/flood-db:/data/flood-db
 
   flood-vpn:
     extends:
