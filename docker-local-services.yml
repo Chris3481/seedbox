@@ -1,6 +1,9 @@
 
 services:
 
+  ########################################################################
+  # Samba
+  ########################################################################
   samba:
     image: dperson/samba:armhf
     container_name: samba
@@ -40,6 +43,9 @@ services:
     # command: '-s "usbhub;/mnt;yes;no;yes;" -p' # USB Hub should have access to anyone for anything
     #command: '-s "usbhub;/mnt" -s "Bobs Volume;/mnt2;yes;no;no;bob" -u "bob;bobspasswd"'
 
+  ########################################################################
+  # minidlna
+  ########################################################################
   minidlna:
     container_name: minidnla
     restart: unless-stopped
@@ -52,6 +58,9 @@ services:
       - MINIDLNA_FRIENDLY_NAME=Raspberry
     network_mode: "host"
 
+  ########################################################################
+  # filebrowser
+  ########################################################################
   filebrowser:
     container_name: filebrowser
     restart: unless-stopped
