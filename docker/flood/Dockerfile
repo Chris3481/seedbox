@@ -1,18 +1,20 @@
-FROM node:14
+FROM debian:12
 
-RUN apt-get update && \
+RUN apt update && \
         apt-get install -y \
+        curl
+
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh && \
+    bash nodesource_setup.sh
+
+RUN apt install -y \
+        nodejs \
         git \
         jq \
         && rm -rf /var/lib/apt/lists/*
 
 # install flood
-RUN cd /srv && git clone https://github.com/jfurrow/flood.git && \
-    cd /srv/flood && cp config.template.js config.js
-
-RUN cd /srv/flood && \
-     npm install && \
-     npm run build
+RUN npm install --global flood
 
 # Create the database directory if it doesn't exist
 RUN mkdir -p /data/flood-db/db
@@ -28,6 +30,3 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Set the entrypoint of the container
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-
-
-# CMD npx --prefix /srv/flood/ flood start -h 0.0.0.0 -d /data/flood-db
