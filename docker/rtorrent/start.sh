@@ -1,5 +1,7 @@
 #!/bin/bash
 
+rm -rf /srv/rtorrent/.session/rtorrent.pid
+rm -rf /srv/rtorrent/.session/rtorrent.lock
 
 if [ $ENABLE_VPN == 'true' ]; then
 

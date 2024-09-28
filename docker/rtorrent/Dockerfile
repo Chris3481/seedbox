@@ -1,4 +1,4 @@
-FROM buildpack-deps:bullseye
+FROM debian:12
 
 ARG USERNAME=rtorrent
 ENV USER_UID=1000
@@ -12,6 +12,7 @@ RUN groupadd --gid $USER_GID $USERNAME \
 RUN apt-get update && \
         apt-get install -y \
         rtorrent \
+        curl \
         lsof \
         net-tools \
         && rm -rf /var/lib/apt/lists/*

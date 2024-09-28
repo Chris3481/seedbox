@@ -55,7 +55,6 @@ services:
     extends:
       service: "rtorrent-base-${RUN_MODE}"
     restart: unless-stopped
-    image: ghcr.io/chris3481/rtorrent:latest
     environment:
       - USER_UID=${USER_ID}
       - USER_GID=${GROUP_ID}

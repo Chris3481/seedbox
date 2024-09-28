@@ -1,11 +1,16 @@
-## Logging:
-##   Levels = critical error warn notice info debug
 
 method.insert = cfg.logs,     private|const|string, (cat,(cfg.basedir),"log/")
 method.insert = cfg.logfile,  private|const|string, (cat,(cfg.logs),"rtorrent-",(system.time),".log")
 
+
+## Logging:
+##   Levels = critical error warn notice info debug
+##   Groups = connection_* dht_* peer_* rpc_* storage_* thread_* tracker_* torrent_*
 print = (cat, "Logging to ", (cfg.logfile))
 log.open_file = "log", (cfg.logfile)
-log.add_output =  "warn", "log"
+log.add_output = "info", "log"
 log.add_output = "tracker_debug", "log"
-log.add_output = "torrent_info", "log"
+log.add_output = "peer_debug", "log"
+log.add_output = "thread_debug", "log"
+log.add_output = "torrent_debug", "log"
+log.add_output = "connection_debug", "log"

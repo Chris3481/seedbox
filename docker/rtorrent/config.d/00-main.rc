@@ -13,58 +13,51 @@ method.insert = cfg.download, private|const|string, (cat,(cfg.basedir),"download
 method.insert = cfg.session,  private|const|string, (cat,(cfg.basedir),".session/")
 method.insert = cfg.watch,    private|const|string, (cat,(cfg.basedir),"watch/")
 
+
+## Create instance directories
 execute.throw = sh, -c, (cat,\
     "mkdir -p \"",(cfg.watch),"/load\" ",\
     "\"",(cfg.watch),"/start\" ")
 
-## There is no point in using lock file in a docker container since it will only
-## give you major headaches if the process dies unexpectedly.
-## Moreover, be sure to not use the same session volume with more than one container.
-session.use_lock.set = no
 
 ## Listening port for incoming peer traffic (fixed; you can also randomize it)
 network.port_range.set = 50000-50000
 network.port_random.set = no
 
-# Set whether the client should try to connect to UDP trackers.
-trackers.use_udp.set = yes
+
+## Tracker-less torrent and UDP tracker support
+## (conservative settings for 'private' trackers, change for 'public')
+dht.mode.set = disable
+protocol.pex.set = no
+
+trackers.use_udp.set = no
 
 
 ## Peer settings
-throttle.max_uploads.set = 200
-throttle.max_uploads.global.set = 300
+throttle.max_uploads.set = 100
+throttle.max_uploads.global.set = 250
 
 throttle.min_peers.normal.set = 20
 throttle.max_peers.normal.set = 60
-throttle.min_peers.seed.set = -1
-throttle.max_peers.seed.set = -1
-trackers.numwant.set = 100
-throttle.max_downloads.global.set = 150
+throttle.min_peers.seed.set = 30
+throttle.max_peers.seed.set = 80
+trackers.numwant.set = 80
 
-system.file.allocate.set = 1
-
-protocol.encryption.set = allow_incoming,enable_retry,prefer_plaintext
+protocol.encryption.set = allow_incoming,try_outgoing,enable_retry
 
 
 ## Limits for file handle resources, this is optimized for
 ## an `ulimit` of 1024 (a common default). You MUST leave
-## a ceiling of handles reserved for rTorrent s internal needs!
-
-network.max_open_files.set = 4096
-network.max_open_sockets.set = 1536
-network.http.max_open.set = 99
-network.send_buffer.size.set = 64M
-network.receive_buffer.size.set = 4M
+## a ceiling of handles reserved for rTorrent's internal needs!
+network.http.max_open.set = 50
+network.max_open_files.set = 600
+network.max_open_sockets.set = 300
 
 
 ## Memory resource usage (increase if you have a large number of items loaded,
 ## and/or the available resources to spend)
-
-# Set the max amount of memory address space used to mapping file chunks. This refers to memory mapping, not
-#  physical memory allocation. Default: `1GB` (`max_memory_usage`)
-# This may also be set using ulimit -m where 3/4 will be allocated to file chunks.
-pieces.memory.max.set = 1024M
-network.xmlrpc.size_limit.set = 32M
+pieces.memory.max.set = 2048M
+network.xmlrpc.size_limit.set = 8M
 
 
 ## Basic operational settings (no need to change these)
@@ -75,7 +68,7 @@ execute.nothrow = sh, -c, (cat, "echo >",\
 
 
 ## Other operational settings (check & adapt)
-encoding.add = utf8
+encoding.add = UTF-8
 system.umask.set = 0027
 system.cwd.set = (directory.default)
 network.http.dns_cache_timeout.set = 25
@@ -84,7 +77,7 @@ schedule2 = monitor_diskspace, 15, 60, ((close_low_diskspace, 1000M))
 #view.sort_current = seeding, greater=d.ratio=
 #keys.layout.set = qwerty
 #network.http.capath.set = "/etc/ssl/certs"
-network.http.ssl_verify_peer.set = 0
+#network.http.ssl_verify_peer.set = 0
 #network.http.ssl_verify_host.set = 0
 
 
