@@ -1,8 +1,8 @@
 FROM debian:12
 
 ARG USERNAME=rtorrent
-ENV USER_UID=1000
-ENV USER_GID=$USER_UID
+ENV USER_UID=$USER_UID
+ENV USER_GID=$USER_GID
 
 # Create the user
 RUN groupadd --gid $USER_GID $USERNAME \

@@ -18,12 +18,14 @@ services:
       service: "flood-base-${RUN_MODE}"
     restart: unless-stopped
     environment:
-      - PUID=${USER_ID}
-      - PGID=${GROUP_ID}
+      - USER_UID=${USER_ID}
+      - USER_GID=${GROUP_ID}
+      - DOWNLOAD_FOLDER_PATH=${DOWNLOAD_FOLDER_PATH}
       - FLOOD_ADMIN_USERNAME=${FLOOD_ADMIN_USERNAME}
       - FLOOD_ADMIN_PASSWORD=${FLOOD_ADMIN_PASSWORD}
     volumes:
-      - ${BASE_PATH}/docker/flood/config.js:/srv/flood/config.js
+      - ${BASE_PATH}/docker/flood/config.js:/data/flood/config.js
+      - ${DOWNLOAD_FOLDER_PATH}:/srv/rtorrent/download
 #      - ${BASE_PATH}/data/flood-db:/data/flood-db
 
   flood-vpn:

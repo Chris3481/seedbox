@@ -17,10 +17,10 @@ RUN apt install -y \
 RUN npm install --global flood
 
 # Create the database directory if it doesn't exist
-RUN mkdir -p /data/flood-db/db
+RUN mkdir -p /data/flood/db
 
 # Copy the users.db file into the container
-COPY ./users.db /data/flood-db/db
+COPY ./users.db /data/flood/db
 
 # Copy the entrypoint.sh script into the container
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
