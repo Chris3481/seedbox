@@ -1,0 +1,21 @@
+
+services:
+
+  ########################################################################
+  # Samba
+  ########################################################################
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=${USER_ID}
+      - PGID=${GROUP_ID}
+      - TZ=${TIMEZONE}
+      #- JELLYFIN_PublishedServerUrl=192.168.0.5 #optional
+    volumes:
+      - ${BASE_PATH}/data/jellyfin:/config
+      #- /path/to/tvseries:/data/tvshows
+      - ${DOWNLOAD_FOLDER_PATH}:/data/movies
+    ports:
+      - 8096:8096
+    restart: unless-stopped
