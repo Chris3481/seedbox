@@ -5,14 +5,14 @@ start_flood() {
   echo "ensure correct permissions"
   chown -R "$USER_UID":"$USER_GID" /data
 
-  echo "Create folders fif not exists"
-  mkdir -p "${DOWNLOAD_FOLDER_PATH}"/series
-  mkdir -p "${DOWNLOAD_FOLDER_PATH}"/films
-  chown -R "$USER_UID":"$USER_GID" "${DOWNLOAD_FOLDER_PATH}"/series
-  chown -R "$USER_UID":"$USER_GID" "${DOWNLOAD_FOLDER_PATH}"/films
+  echo "Create folders if not exists"
+  mkdir -p /srv/rtorrent/download/series
+  mkdir -p /srv/rtorrent/download/films
+  chown -R "$USER_UID":"$USER_GID" /srv/rtorrent/download/series
+  chown -R "$USER_UID":"$USER_GID" /srv/rtorrent/download/films
 
   echo "Starting Flood..."
-  npx --prefix /data/flood/ flood start -h 0.0.0.0 -d /data/flood --allowedpath /srv/rtorrent/download &
+  npx --prefix /data/flood/ flood start -h 0.0.0.0 -d /data/flood --awllowedpath /srv/rtorrent/download &
   echo "Waiting for Flood to start..."
   sleep 30
 }
